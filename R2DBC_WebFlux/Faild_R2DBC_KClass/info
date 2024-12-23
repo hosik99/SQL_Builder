@@ -1,0 +1,25 @@
+1. KclassGenerator클래스를 이용해 프로젝트가 build될때 생성되게 만들었지만 이미 다른 곳에서 KClass를 import 중이면 에러가 발생 
+    -> 사용 중인 부분을 주석화 처리 후 build
+    1-2. 인텔리제이에서 프로젝트 클릭 후 build Module을 통해 빌드하면 생성되지 않음 
+        -> 직접 터미널에서 ./gradlew build로 실행 해야함
+
+2. Kclass를 이용해서 SQL을 작성하면 SQL 인젝션 해킹에 취약
+
+3. 조건식 (where을 이용한 Filtering, Date Searching, OrderBy를 이용한 정렬)을 사용할 때 동적으로 구현 할 수 없음
+ 
+ 
+ (dir) >> generatedKClass -> Entity Class의 필드명과 DB에서 사용되는 이름을 클래스화
+    리플랙션을 통해 Entity 클래스에서
+    table, @table 어노테이션 값
+    field, @@colunm 어노테이션 값을 가져와서
+    클래스로 만듬
+
+r2dbc
+    /pageable -> 프론트에서 조건을 통해 DB 데이터 검색을 쉽게하기 위해 만든 클래 패키지
+    /sqlBuilder -> R2DBC Reactive에 사용할 SQL을 동적으로 운영하기 위해 시도한 클래스
+        /AnnotationReader.class -> Entity Class의 @Table, @Colunm 값과 필드명을 읽고 이중 Map<Map<>> 형태로 만듬
+        /GenerateKclass.@Interface -> AnnotationReader가 읽을 클래스의 기준이 되는 새로운 어노테이션을 생성
+        /KclassGenerator.class -> AnnotationReader.class에서 받은 Map을 사용해서 KClass를 생성
+        /SqlBuilder.class -> SQL문을 함수화
+
+PostsCustomRepository.class -> 사용 예시
